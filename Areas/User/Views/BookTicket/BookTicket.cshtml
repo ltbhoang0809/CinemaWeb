@@ -1,0 +1,1116 @@
+﻿@{
+    var currentDate = DateTime.Now.Date;
+    int total = 0;
+    var currentHour = currentDate.Hour;
+    var currentUser = (CinemaWeb.Models.user)HttpContext.Current.Session["user"];
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="~/assets/images/logo/cinema-logo.png" type="image/png">
+    <title>Ohayou Cinema</title>
+    <link rel="stylesheet" href="~/Areas/User/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/assets/font/themify-icons/themify-icons.css" />
+    <link rel="stylesheet" href="~/Areas/User/assets/css/bookticket.css?v=1" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="header">
+        <div class="container-fluid  p-4">
+            <div class="row align-items-center">
+                <div class="col-md-2 px-5 py-1">
+                    <a href="/User/UserHome/" class="navbar-brand">
+                        <img src="~/assets/images/logo/cinema-logo.png" alt="Ohayou Cinema" class="img-fluid">
+                    </a>
+                </div>
+                <div class="col-md-2 buyticket-area">
+                    <button type="button" class="buyticket-btn btn">
+                        <img src="~/assets/images/subimg/btn-ticket.png" alt="" class="img-buy-btn img-fluid">
+                    </button>
+                </div>
+                <div class="col-md-4" style="padding: 0">
+                    <ul class="list-gr-1 list-group list-group-horizontal">
+                        <li class="list-group-item movie-area">
+                            Phim
+                            <i class="ti-angle-down down-btn"></i>
+                            <ul class="movie-status list-group">
+                                <li class="movie-sta-text-1 py-1">
+                                    <i class="fa-solid fa-film"></i>
+                                    <a href="#playing">PHIM ĐANG CHIẾU</a>
+                                </li>
+                                <div class="movie-list py-1">
+                                    <div class="row">
+                                        @if (ViewBag.MovieList != null)
+                                        {
+                                            var count = 0;
+                                            foreach (var movie in ViewBag.MovieList)
+                                            {
+                                                if (movie.movie_status == true && count < 4)
+                                                {
+                                                    <div class="col-md-3 sub-movie-list">
+                                                        <a href="/User/BookTicket/MovieDetail/@movie.id" class="text-dark-emphasis movie-name">
+                                                            <img src="@movie.url_image" alt="" class="img-fluid img-movie">
+                                                            <button class="buy-ticket-btn btn">
+                                                                <i class="ti-ticket"></i>
+                                                                Mua vé
+                                                            </button>
+                                                            <span>@movie.title</span>
+                                                        </a>
+                                                    </div>
+                                                    count++;
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                                <li class="movie-sta-text-2 py-1">
+                                    <i class="fa-solid fa-film"></i>
+                                    <a href="#coming">PHIM SẮP CHIẾU</a>
+                                </li>
+                                <div class="movie-list py-1">
+                                    <div class="row">
+                                        @if (ViewBag.MovieList != null)
+                                        {
+                                            var count = 0;
+                                            foreach (var movie in ViewBag.MovieList)
+                                            {
+                                                if (movie.movie_status == false && count < 4)
+                                                {
+                                                    <div class="col-md-3 sub-movie-list">
+                                                        <a href="/User/BookTicket/MovieDetail/@movie.id" class="text-dark-emphasis movie-name">
+                                                            <img src="@movie.url_image" alt="" class="img-fluid img-movie">
+                                                            <button class="buy-ticket-btn btn">
+                                                                <i class="ti-ticket"></i>
+                                                                Mua vé
+                                                            </button>
+                                                            <span>@movie.title</span>
+                                                        </a>
+                                                    </div>
+                                                    count++;
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </ul>
+                        </li>
+
+                        <li class="list-group-item cinema-corner text-center">
+                            Góc Điện Ảnh
+                            <i class="ti-angle-down down-btn"></i>
+                            <ul class="sub-list-gr-1 list-group">
+                                <li><a href="/User/BookTicket/MovieType">Thể loại phim</a></li>
+                                <li><a href="/User/BookTicket/ActorList">Diễn viên</a></li>
+                                <li><a href="#">Đạo diễn</a></li>
+                                <li><a href="#">Bình luận phim</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="list-group-item event-list text-center">
+                            Sự Kiện
+                            <i class="ti-angle-down down-btn"></i>
+                            <ul class="sub-list-gr-1 list-group">
+                                <li><a href="#">Ưu đãi</a></li>
+                                <li><a href="/User/BookTicket/BestMovie">Phim hay tháng</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="list-group-item ticket-price text-center">
+                            Rạp/Giá vé
+                            <i class="ti-angle-down down-btn"></i>
+                            <ul class="sub-list-gr-1 list-group">
+                                <li><a href="/User/UserHome/OhayouCinema">Rạp Đà Nẵng</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-1">
+                    <button class="search-btn btn">
+                        <i class="search-icon ti-search"></i>
+                    </button>
+                </div>
+                <div class="login-area col-md-3">
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="show-login js-show-login">
+                                <div class="account-wrapper">
+                                    <img src="~/assets/images/subimg/account.png" alt="" class="img-fluid account-img">
+                                    <ul class="list-group account-list">
+                                        <li class="list-group-item">
+                                            <a href="/User/UserHome/UserProfile">
+                                                <i class="fa-solid fa-id-badge account-icon"></i>
+                                                Tài Khoản
+                                            </a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <a href="/User/UserHome/HistoryTicket">
+                                                <i class="fa-solid fa-list-ol account-icon"></i>
+                                                Lịch Sử
+                                            </a>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <a href="/Home/SignOut" class="js-logout">
+                                                <i class="fa-solid fa-arrow-right-from-bracket account-icon"></i>
+                                                Đăng Xuất
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="user_name  row1 " style="font-weight: 600; font-size: small;">
+                                <img class="icon" src="~/Areas/User/assets/images/logo/logomini.png" alt="">
+                                @currentUser.full_name
+                            </div>
+                            <div class="row1" style="font-size: small; font-weight: 500;">
+                                <img class="icon" src="~/Areas/User/assets/images/logo/icon-gift.190935e4.png" alt="">
+                                0 Star
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="buyticket-container">
+        <div class="row choose-area">
+            <div class="col-md-2 col-item1"></div>
+            <div class="col-md-8 col-item2">
+                <div class="row align-items-center">
+                    <div class="col-md navbar-item navbar-colored" id="navbar-item-1">Chọn phim / Suất</div>
+                    <div class="col-md navbar-item" id="navbar-item-2" style="padding-left: 5rem ;">Chọn ghế</div>
+                    <div class="col-md navbar-item" id="navbar-item-3" style="padding-left: 4rem;">Thanh toán</div>
+                    <div class="col-md navbar-item" id="navbar-item-4" style="padding-left: 4rem;">Xác nhận</div>
+                </div>
+            </div>
+            <div class="col-md-2 col-item3"></div>
+        </div>
+        <div class="buyticket-side">
+            <div class="row buyticket-wrapper">
+                <div class="col-md-8 buyticket-list">
+                    <div class="row movie-choose bg-white">
+                        <div class="row align-items-center name-selected d-inline-flex gap-1">
+                            <div class="col-md-9">
+                                <h2 class="movie-text">Chọn phim</h2>
+                            </div>
+                            <div class="col-md-1 circle-down-icon">
+                                <a data-bs-toggle="collapse" href="#movielist" role="button" aria-expanded="false" aria-controls="movielist">
+                                    <i class="ti-arrow-circle-down"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="movielist">
+                            <div class="movie-list py-1">
+                                <div class="row">
+                                    @if (ViewBag.MovieList != null)
+                                    {
+                                        foreach (CinemaWeb.Models.movy movie in ViewBag.MovieList)
+                                        {
+                                            if (movie.movie_status == true)
+                                            {
+                                                <div class="col-md-3 sub-movie-list1" data-movieId="@movie.id" onclick="selectMovie('@movie.id')">
+                                                    <img src="@movie.url_image" alt="" class="img-fluid img-movie">
+                                                    <span class="text-dark-emphasis fw-medium movie-name">@movie.title</span>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row datetime-choose bg-white">
+                        <div class="row align-items-center name-selected d-inline-flex gap-1">
+                            <div class="col-md-9">
+                                <h2 class="movie-text">Chọn suất</h2>
+                            </div>
+                            <div class="col-md-1 circle-down-icon">
+                                <a data-bs-toggle="collapse" href="#datetime" role="button" aria-expanded="false" aria-controls="datetime">
+                                    <i class="ti-arrow-circle-down"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="collapse day-cinema" id="datetime">
+                            <div class="datetime-wrapper">
+                                <div class="datetime-container" role="tabpanel">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div id="countdown-timer">
+                        <div class="row align-items-center justify-content-center clock">
+
+                        </div>
+                    </div>
+                    <div class="movie-item-selected bg-white">
+                        <div class="row movie-selected-detail">
+                            <div class="col-md-4 movie-img-wrapper">
+                                <img class="movie-selected-img" src="~/assets/images/movie/unname-movie.svg" alt="">
+                            </div>
+                            <div class="col-md-8 movie-name-wrapper">
+                                <div class="row">
+                                    <span class="movie-selected-name"></span>
+                                </div>
+                            </div>
+                            <div class="ticket-selected-detail">
+                                <div class="row">
+                                    <span></span>
+                                </div>
+                                <div class="row d-inline-block">
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                            <div class="row dashed-line" style="margin-left: 27px; width: 85%;"></div>
+                            <div class="seat-selected-detail">
+                                <div class="row seat-chosen">
+                                    <div class="col-md seat-clicked">
+                                        <span>Ghế:</span>
+                                        <span id="chosen-seats"></span>
+                                    </div>
+                                    <div class="col-auto justify-content-end money-item">
+                                        <span id="total-price">0</span>
+                                        <i class="fa-solid fa-dong-sign"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row dashed-line"></div>
+                        <div class="row align-items-center total-money">
+                            <div class="col-md">
+                                <span>Tổng cộng</span>
+                            </div>
+                            <div class="col-auto justify-content-end money-item">
+                                <span id="sum-money">0</span>
+                                <i class="fa-solid fa-dong-sign"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-center align-items-center ticket-next-btn">
+                        <div class="col-md-6 return-item">
+                            <button class="returnBtn">Quay lại</button>
+                        </div>
+                        <div class="col-md-6 continue-item justify-content-center">
+                            <button class="btn continueBtn un-click">
+                                <span>Tiếp tục</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="toast-mess">
+            <div class="toast-mess-content">
+                <i class="fas fa-solid fa-check check"></i>
+                <i class="ti-close error"></i>
+                <div class="message">
+                    <span class="text text-1"></span>
+                    <span class="text text-2"></span>
+                </div>
+            </div>
+
+            <i class="fa-solid fa-xmark close"></i>
+            <div class="progress-btn"></div>
+        </div>
+    </div>
+    <div class="footer">
+    </div>
+    <script src="~/Areas/User/assets/js/bookticket.js?v=1"></script>
+    <script src="~/Areas/User/assets/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+
+<script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    let timer1, timer2;
+
+    function showtoastmess(success, message1, message2) {
+        $('.text-1').text(message1);
+        $('.text-2').text(message2);
+        if (success) {
+            $('.check').show();
+            $('.error').hide();
+        } else {
+            $('.check').hide();
+            $('.error').show();
+        }
+        $('.toast-mess').addClass("active");
+        $('.progress-btn').addClass("active");
+
+        timer1 = setTimeout(() => {
+            $('.toast-mess').removeClass("active");
+        }, 5000); // 1s = 1000 milliseconds
+
+        timer2 = setTimeout(() => {
+            $('.progress-btn').removeClass("active");
+        }, 5300);
+    }
+
+    function getDayOfWeek(dateitem) {
+        var days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+        return days[dateitem.getDay()];
+    }
+    function formatDate(dateitem, choose) {
+        var day = dateitem.getDate();
+        var month = dateitem.getMonth() + 1;
+        var year = dateitem.getFullYear().toString().substr(-2);
+
+        return choose == 1 ? ((day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month)
+            : (year + (month < 10 ? '0' : '') + month + (day < 10 ? '0' : '') + day);
+    }
+    function formatTime(timeitem, choose) {
+        var hour = timeitem.getHours();
+        var minute = timeitem.getMinutes();
+        return choose == 1 ? ((hour < 10 ? '0' : '') + hour + ':' + (minute < 10 ? '0' : '') + minute)
+            : ((hour < 10 ? '0' : '') + hour + (minute < 10 ? '0' : '') + minute);
+    }
+
+    $(document).on('click', '.sub-movie-list1', function (event) {
+        event.preventDefault();
+        var movieName = $(this).find('.movie-name').text();
+        var movieImgSrc = $(this).find('.img-movie').attr('src');
+
+        $('.movie-text').first().text("Chọn phim - " + movieName);
+        $('.movie-selected-name').text(movieName);
+        $('.movie-selected-img').attr('src', movieImgSrc);
+        $('#movielist').removeClass('show');
+        $('#datetime').addClass('show');
+        $('.datetime-container').addClass('open');
+    });
+
+    var chosenSeats = []
+    var invoiceData
+    var currentDay = new Date();
+    var dateOfWeek = ''
+    var dateFormat1 = ''
+    var totalprice = 0
+    function selectMovie(selectedMovieId) {
+        $.ajax({
+            url: '/User/BookTicket/GetDisplayDate',
+            type: 'GET',
+            data: { movieId: selectedMovieId },
+            success: function (data) {
+                var results = data;
+                console.log(results)
+                var count = 0;
+                $('.datetime-container').html('')
+                totalprice = 0
+                var datelist = $('<div></div>').addClass('row align-items-center date-list')
+                var datelistside = $('<ul></ul>').addClass('list-group list-group-horizontal date-list-side')
+                datelist.append(datelistside)
+                var schedulecinema = $('<div></div>').addClass('tab-content schedule-cinema')
+                var cinemaname = $('<div></div>').addClass('row')
+                var nameitem = $('<h2></h2>').addClass('movie-text mx-3 cinema-name').text('Ohayou Đà Nẵng')
+                cinemaname.append(nameitem)
+                schedulecinema.append(cinemaname)
+                $('.datetime-container').append(datelist)
+                $('.datetime-container').append(schedulecinema)
+                for (var i = 0; i < results.length; i++) {
+                    if (count > 6) {
+                        return
+                    }
+                    var dateStr = results[i].display_date1.toString();
+                    var milliseconds = parseInt(dateStr.replace("/Date(", "").replace(")/", ""));
+                    var date = new Date(milliseconds);
+                    console.log(date)
+                    console.log(currentDay)
+                    if (date.getMonth() > currentDay.getMonth() || date.getDate() >= currentDay.getDate() && date.getMonth() === currentDay.getMonth()) {
+                        dayOfWeek = getDayOfWeek(date);
+                        var display_date_id = results[i].id;
+                        console.log(display_date_id)
+                        dateFormat1 = formatDate(date, 1);
+                        var dateFormat2 = formatDate(date, 2);
+
+                        // Tạo một thẻ <li> mới
+                        var listItem = $('<li></li>').addClass('col-md list-group-item date-time-item').attr({
+                            'data-displaydateId': display_date_id,
+                            'id': 'date-' + dateFormat2 + '-li',
+                            'onclick': "selectDate('" + display_date_id + "','" + selectedMovieId + "')" // Thêm sự kiện onclick
+                        });
+                        $('.date-list-side').append(listItem)
+
+                        // Tạo một thẻ <a> để hiển thị ngày và áp dụng sự kiện onclick
+                        var link = $('<a></a>').addClass('text-dark-emphasis fw-medium').attr({
+                            'href': '#date-' + dateFormat2,
+                            'data-displaydateId': display_date_id,
+                            'data-bs-toggle': 'list',
+                            'data-bs-target': '#date-' + dateFormat2,
+                            'role': 'tab',
+                        }).html('<span>' + dayOfWeek + '</span> <span>' + dateFormat1 + '</span>'); // Thêm thẻ span hiện thứ và ngày
+
+                        // Gắn thẻ <a> vào thẻ <li>
+                        listItem.append(link);
+
+                        // Gắn thẻ <li> vào danh sách ngày chiếu
+
+                        var timeCinemaDiv = $('<div></div>').addClass('tab-pane time-cinema').attr('id', 'date-' + dateFormat2);
+
+                        $('.schedule-cinema').append(timeCinemaDiv)
+                        count++
+                    }
+                }
+                if (chosenSeats != null && invoiceData != null) {
+                    removeHoldSeat(invoiceData.movieId, invoiceData.displaydateId, invoiceData.scheduleId, invoiceData.roomId, chosenSeats)
+                }
+                //var liFirst = $('.date-list-side li:first-of-type');
+                //liFirst.addClass('hovered');
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        });
+    };
+
+    //$(document).on('click, .sub-movie-list1', () => {
+    //    var liFirst = $('.date-list-side li:first-of-type');
+    //    liFirst.addClass('hovered');
+    //})
+
+    //liFirst.find('a').addClass('active');
+     //Thêm sự kiện cho các phần tử được tạo bằng AJAX
+    $(document).on('click', '.date-list-side a', function (event) {
+        event.preventDefault();
+        // Xóa lớp hovered khỏi tất cả các phần tử li và active khỏi tất cả các phần tử a trước khi thêm vào
+        RemoveDateSelected();
+
+
+
+        // Thêm lớp hovered cho phần tử li được chọn và lớp active cho phần tử a được chọn
+        var liId = $(this).attr('href').substring(1) + '-li';
+        $('#' + liId).addClass('hovered');
+        //$(this).addClass('active');
+    });
+
+     //Xóa lớp hovered và active khỏi tất cả các phần tử li và a
+    function RemoveDateSelected() {
+        $('.date-list-side li').removeClass('hovered');
+        //$('.date-list-side a').removeClass('active');
+    }
+    var timeFormat1 = ''
+    function selectDate(selectedDateId, selectedMovieId) {
+
+        $.ajax({
+            url: '/User/BookTicket/GetScheduleTime',
+            type: 'GET',
+            data: { displaydateId: selectedDateId, movieId: selectedMovieId },
+            success: function (data) {
+                var results = data;
+                console.log(results)
+                $('.time-cinema').html('')
+                var timelistDiv = $('<div></div>').addClass('row align-items-center')
+                var timelist = $('<ul></ul>').addClass('list-group list-group-horizontal justify-content-center time-list')
+                timelistDiv.append(timelist)
+                $('.time-cinema').append(timelistDiv)
+                var seatcinema = $('<div></div>').addClass('tab-content seat-cinema')
+                $('.time-cinema').append(seatcinema)
+                /*timelist.html('')*/
+                for (var i = 0; i < results.length; i++) {
+                    var dateStr = results[i].schedule_time.toString();
+                    var milliseconds = parseInt(dateStr.replace("/Date(", "").replace(")/", ""));
+                    var scheduleTime = new Date(milliseconds);
+                    var scheduleHour = scheduleTime.getHours();
+                    var scheduleMinute = scheduleTime.getMinutes();
+                    console.log(scheduleTime, scheduleHour, scheduleMinute)
+                    if (scheduleTime.getDate() === currentDay.getDate()) {
+                        if (scheduleHour > currentDay.getHours() || scheduleHour === currentDay.getHours() && scheduleMinute >= currentDay.getMinutes()) {
+                            var schedule_id = results[i].id
+                            console.log(schedule_id)
+                            timeFormat1 = formatTime(scheduleTime, 1);
+                            var timeFormat2 = formatTime(scheduleTime, 2);
+                            // Tạo một thẻ <li> mới
+                            var listItem = $('<li></li>').addClass('col-md-1 list-group-item time-btn').attr({
+                                'id': 'time-' + timeFormat2 + '-li'
+                            });
+
+                            // Tạo một thẻ <a> để hiển thị ngày và áp dụng sự kiện onclick
+                            var link = $('<a></a>').addClass('text-dark-emphasis fw-medium').attr({
+                                'href': '#time-' + timeFormat2,
+                                'data-scheduleId': schedule_id,
+                                'data-bs-toggle': 'list',
+                                'data-bs-target': '#time-' + timeFormat2,
+                                'role': 'tab',
+                            })
+                            var span = $('<span></span>').addClass('btn btn-outline-secondary time-item').attr({
+                                'data-scheduleId': schedule_id,
+                                'onclick': "selectSchedule('" + schedule_id + "','" + selectedDateId + "','" + selectedMovieId + "')" // Thêm sự kiện onclick
+                            }).text(timeFormat1);
+                            link.append(span)
+                            // Gắn thẻ <a> vào thẻ <li>
+                            listItem.append(link);
+
+                            // Gắn thẻ <li> vào danh sách ngày chiếu
+                            $('.time-list').append(listItem);
+                            if (i == 0) {
+                                var seatcontainer = $('<div></div>').addClass('tab-pane seat-container active').attr({
+                                    'id': 'time-' + timeFormat2,
+                                    'role': 'tabpanel'
+                                })
+                                $('.seat-cinema').append(seatcontainer)
+                            }
+                            else {
+                                var seatcontainer = $('<div></div>').addClass('tab-pane seat-container').attr({
+                                    'id': 'time-' + timeFormat2,
+                                    'role': 'tabpanel'
+                                })
+                                $('.seat-cinema').append(seatcontainer)
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var schedule_id = results[i].id
+                        console.log(schedule_id)
+                        timeFormat1 = formatTime(scheduleTime, 1);
+                        var timeFormat2 = formatTime(scheduleTime, 2);
+                        // Tạo một thẻ <li> mới
+                        var listItem = $('<li></li>').addClass('col-md-1 list-group-item time-btn').attr({
+                            'id': 'time-' + timeFormat2 + '-li'
+                             // Thêm sự kiện onclick
+                        });
+
+                        // Tạo một thẻ <a> để hiển thị ngày và áp dụng sự kiện onclick
+                        var link = $('<a></a>').addClass('text-dark-emphasis fw-medium').attr({
+                            'href': '#time-' + timeFormat2,
+                            'data-scheduleId': schedule_id,
+                            'data-bs-toggle': 'list',
+                            'data-bs-target': '#time-' + timeFormat2,
+                            'role': 'tab'
+                        })
+                        var span = $('<span></span>').addClass('btn btn-outline-secondary time-item').attr({
+                            'data-scheduleId': schedule_id,
+                            'onclick': "selectSchedule('" + schedule_id + "','" + selectedDateId + "','" + selectedMovieId + "')"
+                        }).text(timeFormat1);
+                        link.append(span)
+                        // Gắn thẻ <a> vào thẻ <li>
+                        listItem.append(link);
+
+                        // Gắn thẻ <li> vào danh sách ngày chiếu
+                        $('.time-list').append(listItem);
+                        if (i === 0) {
+                            var seatcontainer = $('<div></div>').addClass('tab-pane seat-container active').attr({
+                                'id': 'time-' + timeFormat2,
+                                'role': 'tabpanel'
+                            })
+                            $('.seat-cinema').append(seatcontainer)
+                        }
+                        else {
+                            var seatcontainer = $('<div></div>').addClass('tab-pane seat-container').attr({
+                                'id': 'time-' + timeFormat2,
+                                'role': 'tabpanel'
+                            })
+                            $('.seat-cinema').append(seatcontainer)
+                        }
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        });
+    };
+    // Thêm sự kiện cho các phần tử được tạo bằng AJAX
+    // Sử dụng sự kiện 'shown.bs.tab' của Bootstrap tabs
+    //$('.time-list .time-btn a').on('shown.bs.tab', function (event) {
+    //    var targetPane = $(event.target).attr("href"); // Lấy href của tab được click
+    //    $(targetPane).addClass('active'); // Thêm class active vào tab-pane tương ứng
+    //});
+
+
+    var roomName, selectedRoomId
+    var isSelectScheduleTriggered = false
+
+    function selectSchedule(selectedScheduleId, selectedDateId, selectedMovieId) {
+        $.ajax({
+            url: '/User/BookTicket/GetRoomSeat',
+            type: 'GET',
+            data: { scheduleId: selectedScheduleId, displaydateId: selectedDateId, movieId: selectedMovieId },
+            success: function (data)
+            {
+                resetCountdown()
+                var results = data;
+                $('.seat-container').html('')
+                var seattextDiv = $('<div></div>').addClass('row')
+                var seattext = $('<h2></h2>').addClass('movie-text seat-text').text('Chọn ghế')
+                seattextDiv.append(seattext)
+                $('.seat-container').append(seattextDiv)
+                console.log(results[0]);
+                roomName = results[0].RoomName
+                selectedRoomId = results[0].RoomId
+                var k = 0;
+                for (var i = 0; i < 8; i++) {
+                    var rowchar = String.fromCharCode(65 + i); // chữ cái bắt đầu từ 'a'
+                    var roomListRow = $('<div class="row align-items-center justify-content-center room-list"></div>')
+                    roomListRow.append('<div class="col-md-1"><span>' + rowchar + '</span></div>')
+                    for (var j = 0; j < 8; ++j) {
+                        //var seat = seatList[i][k]
+                        var seat = results[0].Seats[k];
+                        var colItem = $('<div class="col-md-1"></div>')
+                        var seatItem = $('<span class="seat-item"></span>').attr('id', 'seat-' + seat.SeatId)
+                        console.log(seat.SeatStt)
+                        if (seat.SeatStt) {
+                            seatItem.addClass('seat-sold')
+                            colItem.addClass('disable-hover')
+                        }
+                        else {
+                            seatItem.attr({
+                                'onclick': "selectSeat('" + seat.SeatId + "','" + selectedScheduleId + "','" + selectedDateId + "','" + selectedMovieId + "')"
+                            })
+                        }
+                        seatItem.attr({
+                            'data-row': rowchar,
+                            'data-seat': seat.SeatRow
+                        }).text(seat.SeatRow);
+                        //console.log('Seat ' + seat.SeatRow);
+                        colItem.append(seatItem)
+                        roomListRow.append(colItem)
+                        k++;
+                    }
+                    roomListRow.append('<div class="col-md-1"><span>' + rowchar + '</span></div>')
+                    $('.seat-container').append(roomListRow)
+                }
+                var screenDiv = $('<div class="row align-items-center justify-content-center screen-movie"><div>').text('Màn hình')
+                var seatSttDiv = $('<div class="row align-items-center seat-status"><div>')
+                var seatSold = $('<div class="col-md-3"></div>').append('<span class="btn btn-outline-secondary seat-sold"></span>' +'<span> Ghế đã bán</span>')
+                var seatSelecting = $('<div class="col-md-3"></div>').append('<span class="btn btn-outline-secondary seat-selecting"></span>' + '<span> Ghế đang chọn</span>')
+                seatSttDiv.append(seatSold, seatSelecting)
+                $('.seat-container').append(screenDiv)
+                $('.seat-container').append(seatSttDiv)
+
+                var showtime = $('.chosen').text().trim();
+                var tabPaneId = $('.chosen').closest('.tab-pane').attr('id');
+                var dateListItem = $('#' + tabPaneId + '-li');
+                var dayOfWeek = dateListItem.find('span:first-child').text().trim();
+                var date = dateListItem.find('span:last-child').text().trim();
+                console.log(showtime, tabPaneId, dateListItem, dayOfWeek)
+                $('.ticket-selected-detail').html(
+                    '<div class="row">' +
+                    '<span>Ohayou Đà Nẵng - ' + roomName + '</span>' +
+                    '</div>' +
+                    '<div class="row d-inline-block">' +
+                    '<span>Suất: ' + showtime + '</span>' +
+                    '<span>' + dayOfWeek + ', ' + date + '/2024</span>' +
+                    '</div>'
+                )
+                if (chosenSeats != null && invoiceData != null) {
+                    removeHoldSeat(invoiceData.movieId, invoiceData.displaydateId, invoiceData.scheduleId, invoiceData.roomId, chosenSeats)
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+    }
+
+    
+    var invoiceData
+    function selectSeat(selectedSeatId, selectedScheduleId, selectedDateId, selectedMovieId) {
+        var index = chosenSeats.indexOf(selectedSeatId)
+        if (index === -1) {
+            if (chosenSeats.length < 6)
+            // Nếu chưa được chọn, thêm ghế vào danh sách
+                chosenSeats.push(selectedSeatId);
+        } else {
+            // Nếu đã được chọn, loại bỏ ghế khỏi danh sách
+            chosenSeats.splice(index, 1);
+        }
+        console.log(chosenSeats)
+
+        invoiceData = {
+            scheduleId: selectedScheduleId,
+            displaydateId: selectedDateId,
+            movieId: selectedMovieId,
+            roomId: selectedRoomId,
+            chosenSeat: chosenSeats
+        };
+    }
+
+    $(document).on('click', '.time-list .time-btn a', function (event) {
+        event.preventDefault();
+        //if ($(this).find('span').hasClass('chosen')) {
+        //    return
+        //}
+        $('#navbar-item-2').addClass('navbar-colored')
+        RemoveScheduleSelected();
+        $(this).find('span').addClass('chosen')
+        totalprice = 0
+        $('#total-price').text(totalprice.toLocaleString());
+        $('#sum-money').text(totalprice.toLocaleString());
+        $('#chosen-seats').text('')
+        $('#total-price').removeClass('discount-selected');
+        //$('.clock').html('')
+    });
+
+    // Xóa lớp hovered và active khỏi tất cả các phần tử li và a
+    function RemoveScheduleSelected() {
+        $('.time-btn span').removeClass('chosen');
+        //$('.time-btn a').removeClass('active');
+    }
+    $(document).on('click', '.room-list .seat-item', function (event) {
+        event.preventDefault();
+
+        const price = 60000;
+        const seatRow = $(this).attr('data-row');
+        const seatNum = $(this).attr('data-seat');
+
+        var selectedSeats = $('.room-list .seat-item.seat-selected').length;
+
+
+        if ($(this).hasClass('seat-selected')) {
+            $(this).removeClass('seat-selected');
+            totalprice -= price;
+            removeSeat(seatRow, seatNum);
+        } else {
+            if (selectedSeats >= 6) {
+                showtoastmess(false, 'Lưu ý','Bạn chỉ được chọn tối đa 6 ghế!')
+                return
+            }
+            $(this).addClass('seat-selected');
+            totalprice += price;
+            addSeat(seatRow, seatNum);
+        }
+
+        $('#total-price').text(totalprice.toLocaleString());
+        $('#sum-money').text(totalprice.toLocaleString());
+        updateContinueButtonState();
+    })
+
+    function addSeat(row, seatNum) {
+        var chosenSeat = $('#chosen-seats').text().split(' ');
+        chosenSeat.push(row + seatNum);
+        $('#chosen-seats').text(chosenSeat.join(' '));
+    }
+
+    function removeSeat(row, seatNum) {
+        var chosenSeat = $('#chosen-seats').text().split(' ');
+        chosenSeat = chosenSeat.filter(seat => seat !== row + seatNum);
+        $('#chosen-seats').text(chosenSeat.join(' '));
+    }
+    function updateContinueButtonState() {
+        var selectedSeats = $('.room-list .seat-item.seat-selected').length;
+        if (selectedSeats === 0) {
+            $('.continueBtn').addClass('un-click');
+        } else {
+            $('.continueBtn').removeClass('un-click');
+        }
+    }
+
+    $(document).ready(function () {
+        updateContinueButtonState();
+    });
+
+    var countdownInterval;
+    function continueBooking() {
+
+        var countdownTime = 300000; // 5 phút
+        countdownInterval = setInterval(function () {
+            countdownTime -= 1000; // Giảm thời gian đếm ngược mỗi giây
+            if (countdownTime <= 0) {
+                clearInterval(countdownInterval); // Dừng bộ đếm ngược khi đến 0
+                window.location.reload();
+            }
+            // Hiển thị thời gian đếm ngược trong giao diện người dùng
+            displayCountdownTime(countdownTime);
+        }, 1000);
+    }
+
+    function resetCountdown() {
+        clearInterval(countdownInterval); // Dừng bộ đếm ngược nếu đang hoạt động
+        displayCountdownTime(300000);
+    }
+
+    function displayCountdownTime(time) {
+        // Hiển thị thời gian đếm ngược trong giao diện người dùng
+        var minutes = Math.floor(time / 60000);
+        var seconds = Math.floor((time % 60000) / 1000);
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
+
+        var countdownString = minutes + ":" + seconds;
+        $('.clock').html(
+            '<div class=col-auto>' +
+            '<span class="timer-text text-dark-emphasis fw-medium">Thời gian giữ ghế: ' + '</span>' +
+            '<span id="timer-clock">' + '</span>' +
+            '</div>'
+        )
+        if ($("#timer-clock").text().trim() === "") {
+            $("#timer-clock").text(countdownString);
+        }
+    }
+
+    function removeHoldSeat(selectedMovieId, selectedDateId, selectedScheduleId, selectedRoomId, chosenSeats) {
+        var data = {
+            movieId: selectedMovieId,
+            displaydateId: selectedDateId,
+            scheduleId: selectedScheduleId,
+            roomId: selectedRoomId,
+            chosenSeats: chosenSeats,
+        };
+        $.ajax({
+            url: "/User/BookTicket/RemoveHoldSeat",
+            type: "POST",
+            contentType: 'application/json',
+            data: JSON.stringify(data), // Gửi dữ liệu JSON
+            success: function (response) {
+                if (response.success) {
+                    resetCountdown()
+                    $('.clock').hide()
+                }
+            },
+        })
+    }
+
+    function getDiscount() {
+        $.ajax({
+            url: '/User/BookTicket/GetDiscount',
+            type: 'GET',
+            success: function (response) {
+
+                var discountHtml = ""
+                // Duyệt qua danh sách khuyến mãi
+                for (var i = 0; i < response.length; i++) {
+                    var dateStr = response[i].disEnd.toString();
+                    var milliseconds = parseInt(dateStr.replace("/Date(", "").replace(")/", ""));
+                    var dateEnd = new Date(milliseconds);
+                    disEnd = formatDate(dateEnd, 1)
+                    var discount = response[i];
+                    console.log(discount)
+                    // Tạo HTML cho mỗi khuyến mãi và thêm vào chuỗi HTML
+                    discountHtml += '<div class="card card-body" style="display: inline-block !important;">';
+                    discountHtml += '<div class="card-box">';
+                    discountHtml += '<div class="main">';
+                    discountHtml += '<div class="co-img">';
+                    discountHtml += '<img src="../../assets/images/subimg/download.png" alt="' + discount.disTitle + '" />';
+                    discountHtml += '</div>';
+                    discountHtml += '<div class="vertical"></div>';
+                    discountHtml += '<div class="content">';
+                    discountHtml += '<h2>' + discount.disTitle + '</h2>';
+                    discountHtml += '<h1>' + (discount.disItem * 100) + '% <span>Giảm</span></h1>';
+                    discountHtml += '<p>Hạn sử dụng: ' + disEnd + '</p>';
+                    discountHtml += '</div>';
+                    discountHtml += '</div>';
+                    discountHtml += '<div class="copy-button">';
+                    discountHtml += '<button onclick="selectDiscount(\'' + discount.disId + '\', ' + (discount.disItem * 100) + ')" class="copybtn">Sử dụng</button>';
+                    discountHtml += '</div>';
+                    discountHtml += '</div>';
+                    discountHtml += '</div>';
+                    $('#discount-item').append(discountHtml)
+
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+    }
+    var selectedDiscount = null
+    function selectDiscount(discountId, discountAmount) {
+        selectedDiscount = {
+            id: discountId,
+            amount: discountAmount
+        };
+        console.log(selectedDiscount)
+        var originalTotalAmount = parseFloat($('#sum-money').text().replace(/,/g, ''))
+        var discountValue = (originalTotalAmount * discountAmount) / 100;
+        var newTotalAmount = originalTotalAmount - discountValue;
+        console.log(originalTotalAmount, discountValue, newTotalAmount)
+        // Cập nhật giá tiền mới lên thẻ span có id là sum-money
+        $('#total-price').addClass("discount-selected")
+        $('#sum-money').text(newTotalAmount.toLocaleString('en-US'));
+    }
+
+    // ấn tiếp tục thì chuyển sang trang thanh toán
+    var isLoggedIn = "@(Session["user"] != null)";
+    var buyTicketListData
+    $(document).on('click', '.continueBtn', function (event) {
+        if ($(this).hasClass('un-click') || chosenSeats == null) {
+            console.log("seat: " + chosenSeats)
+            return
+        }
+
+        var data = {
+            movieId: invoiceData.movieId,
+            displaydateId: invoiceData.displaydateId,
+            scheduleId: invoiceData.scheduleId,
+            roomId: selectedRoomId,
+            chosenSeats: chosenSeats
+        }
+
+        $.ajax({
+            url: "/User/BookTicket/HoldSeat",
+            type: "POST",
+            contentType: 'application/json',
+            data: JSON.stringify(data), // Gửi dữ liệu JSON
+            success: function (response) {
+                if (response.success) {
+                    $('.clock').show()
+                    var returnUrl = window.location.href;
+                    if (isLoggedIn === "True") {
+                        if ($('.continueBtn').hasClass('paymentBtn') === false)
+                            continueBooking()
+                        $('.continueBtn').addClass('paymentBtn')
+
+                        $('#navbar-item-3').addClass('navbar-colored')
+                        buyTicketListData = $('.buyticket-list').html()
+                        $('.continueBtn').find('span').text('Thanh toán')
+                        $('.buyticket-list').html('')
+                        var discountSection = $(
+                            '<div class="row payment-area">' +
+                            '<div class="row bg-white p-4">' +
+                            '<h3 class="discount-text">Khuyến mãi</h3>' +
+                            '<div class="row mt-2">' +
+                            '<form autocomplete="off" action="">' +
+                            '<div class="row">' +
+                            '<div class="col-auto discount-area">' +
+                            '<label class="inline-block mb-1 text-black-10 text-sm font-bold name-text" for="voucher-code">Mã khuyến mãi</label>' +
+                            '<input id="voucher-code" type="text" class="border w-full py-2 px-4" name="">' +
+                            '</div>' +
+                            '<div class="col-auto d-flex align-items-end mt-7">' +
+                            '<button class="chose-btn">Áp dụng</button>' +
+                            '</div>' +
+                            '</div>' +
+                            '<p class="mt-2" style="font-size: 12px">Lưu ý: Có thể áp dụng nhiều vouchers vào 1 lần thanh toán</p>' +
+                            '</form>' +
+                            '<p class="d-inline-flex gap-1">' +
+                            '<a class="inline-block mb-1 text-black-10 text-sm font-bold name-text" data-bs-toggle="collapse" href="#discount-item" role="button" aria-expanded="false" aria-controls="discount-item">' +
+                            'Khuyến mãi của bạn' +
+                            '<i class="ti-angle-down"></i>' +
+                            '</a>' +
+                            '</p>' +
+                            '<div class="collapse" id="discount-item">' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="row bg-white mt-4 p-4">' +
+                            '<h3 class="discount-text">Phương thức thanh toán</h3>' +
+                            '<div class="my-4">' +
+                            '<ul class="payment-method">' +
+                            '<li class="payment-item" style="list-style-type: none;">' +
+                            '<input type="radio" class="w-4 h-4 text-primary bg-gray-100 border-gray-300" name="" id="payment-vnpay" value="vnpay" checked>' +
+                            '<img src="https://cdn.galaxycine.vn/media/2021/12/2/download_1638460623615.png" alt="" loading="lazy" width="50" height="50" decoding="async" class="inline-block mx-2 object-cover duration-500 ease-in-out group-hover:opacity-100 scale-100 blur-0 grayscale-0">' +
+                            '<label for="payment-vnpay" class="inline-block">VN Pay</label>' +
+                            '</li>' +
+                            '</ul>' +
+                            '</div>' +
+                            '<div class="mt-8" style="font-size: 12px">' +
+                            '<strong class="text-danger font-semibold">(*)</strong>' +
+                            '<span>Bằng việc click/chạm vào THANH TOÁN bên phải, bạn đã xác nhận hiểu rõ các Quy Định Giao Dịch Trực Tuyến của Ohayou Cinema.</span>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>');
+                        $('.buyticket-list').append(discountSection);
+                        getDiscount()
+                    }
+                    else {
+                        // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập
+                        window.location.href = "@Url.Action("SignIn", "Home", new { area = ""})?returnUrl=" + encodeURIComponent(returnUrl);
+                    }
+                }
+                else {
+                    showtoastmess(false, "Lỗi", response.message)
+                }
+            },
+        })
+
+    })
+
+    $(document).on('click', '.paymentBtn', function (event) {
+        var selectedMovieId = invoiceData.movieId;
+        var selectedDateId = invoiceData.displaydateId;
+        var selectedScheduleId = invoiceData.scheduleId;
+        console.log(chosenSeats)
+        sendBookingData(selectedMovieId, selectedDateId, selectedScheduleId, selectedRoomId, chosenSeats)
+        $('#total-price').removeClass("discount-selected");
+    })
+
+    function sendBookingData(movieId, displaydateId, scheduleId, roomId, chosenSeats) {
+        // Chuyển đổi mảng thành chuỗi JSON
+        var data = {
+            movieId: movieId,
+            displaydateId: displaydateId,
+            scheduleId: scheduleId,
+            roomId: roomId,
+            chosenSeats: chosenSeats,
+            discountId: selectedDiscount ? selectedDiscount.id : null
+        };
+
+        $.ajax({
+            url: '/User/BookTicket/GetInvoice',
+            type: 'POST', // Thay đổi phương thức thành POST để gửi dữ liệu JSON
+            contentType: 'application/json', // Chúng ta sẽ gửi dữ liệu dưới dạng JSON
+            data: JSON.stringify(data), // Gửi dữ liệu JSON
+            success: function (response) {
+                if (response.code == 1) {
+                    location.href = response.Url
+                }
+            },
+            error: function (error) {
+                window.location.href = '/User/BookTicket/PaymentFail'
+                //console.error('Error:', error);
+            }
+        });
+    }
+
+
+ // ấn quay lại thì trở lại trang chọn phim
+        $(document).on('click', '.returnBtn', function (event) {
+            if (buyTicketListData) {
+
+                $('#navbar-item-3').removeClass('navbar-colored')
+                $('.continueBtn').removeClass('paymentBtn')
+                $('.buyticket-list').html(buyTicketListData);
+                $('.continueBtn').find('span').text('Tiếp tục')
+                buyTicketListData = '';
+                //resetCountdown()
+            }
+            else {
+                window.location.reload();
+            }
+        })
+
+
+    $(document).ready(function () {
+        var MovieId = localStorage.getItem('selectedMovieId');
+        var DateId = localStorage.getItem('selectedDateId');
+        var ScheduleId = localStorage.getItem('selectedScheduleId');
+
+        if (MovieId) {
+            console.log('Selected Movie ID:', MovieId);
+            $(".sub-movie-list1[data-movieId='" + MovieId + "']").trigger('click');
+            localStorage.removeItem('selectedMovieId');
+        }
+
+       
+        if (DateId) {
+            setTimeout(function () {
+                console.log('Selected Date ID:', DateId);
+                //selectDate(DateId, MovieId)
+                $(".date-time-item a[data-displaydateId='" + DateId + "']").trigger('click');
+                $(".date-time-item[data-displaydateId='" + DateId + "']").trigger('click');
+                localStorage.removeItem('selectedDateId');
+            }, 1000); // Đặt độ trễ 500ms (0.5 giây)
+        }
+
+        if (ScheduleId) {
+            console.log('Selected Schedule ID:', ScheduleId);
+            setTimeout(function () {
+                console.log(ScheduleId);
+                //selectSchedule(ScheduleId, DateId, MovieId)
+                $(".time-btn a[data-scheduleId='" + ScheduleId + "']").trigger('click');
+                $(".time-item[data-scheduleId='" + ScheduleId + "']").trigger('click');
+                localStorage.removeItem('selectedScheduleId');
+            }, 1500); // Đặt độ trễ 1000ms (1 giây)
+        }
+    });
+
+
+</script>

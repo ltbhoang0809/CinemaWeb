@@ -1,0 +1,93 @@
+﻿@model IEnumerable<CinemaWeb.Models.movy>
+
+@section Phimdangchieu {
+    @if (ViewBag.MovieList != null)
+    {
+        var count = 0;
+        foreach (var movie in ViewBag.MovieList)
+        {
+            if (movie.movie_status == true && count < 4)
+            {
+                <div class="col-md-3 sub-movie-list">
+                    <a href="/User/BookTicket/MovieDetail/@movie.id" class="text-dark-emphasis movie-name">
+                        <img src="@movie.url_image" alt="" class="img-fluid img-movie">
+                        <button class="buy-ticket-btn btn">
+                            <i class="ti-ticket"></i>
+                            Mua vé
+                        </button>
+                        <span>@movie.title</span>
+                    </a>
+                </div>
+                count++;
+            }
+        }
+    }
+}
+
+@section AllPhimdangchieu {
+    @if (ViewBag.MovieList != null)
+    {
+        foreach (var movie in ViewBag.MovieList)
+        {
+            if (movie.movie_status == true)
+            {
+                <div class="col-md-3 sub-movie-list1">
+                    <a href="/User/BookTicket/MovieDetail/@movie.id" class="text-dark-emphasis movie-name">
+                        <img src="@movie.url_image" alt="" class="img-fluid img-movie">
+                        <button class="buy-ticket-btn btn">
+                            <i class="ti-ticket"></i>
+                            Mua vé
+                        </button>
+                        <span>@movie.title</span>
+                    </a>
+                </div>
+            }
+        }
+    }
+}
+
+@section Phimsapchieu {
+    @if (ViewBag.MovieList != null)
+    {
+        var count = 0;
+        foreach (var movie in ViewBag.MovieList)
+        {
+            if (movie.movie_status == false && count < 4)
+            {
+                <div class="col-md-3 sub-movie-list">
+                    <a href="/User/BookTicket/MovieDetail/@movie.id" class="text-dark-emphasis movie-name">
+                        <img src="@movie.url_image" alt="" class="img-fluid img-movie">
+                        <button class="buy-ticket-btn btn">
+                            <i class="ti-ticket"></i>
+                            Mua vé
+                        </button>
+                        <span>@movie.title</span>
+                    </a>
+                </div>
+                count++;
+            }
+        }
+    }
+}
+
+@section AllPhimsapchieu {
+    @if (ViewBag.MovieList != null)
+    {
+        foreach (var movie in ViewBag.MovieList)
+        {
+            if (movie.movie_status == false)
+            {
+                <div class="col-md-3 sub-movie-list1">
+                    <a href="/User/BookTicket/MovieDetail/@movie.id" class="text-dark-emphasis movie-name">
+                        <img src="@movie.url_image" alt="" class="img-fluid img-movie">
+                        <button class="buy-ticket-btn btn">
+                            <i class="ti-ticket"></i>
+                            Mua vé
+                        </button>
+                        <span>@movie.title</span>
+                    </a>
+                </div>
+            }
+        }
+    }
+}

@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewBag.Title = "Staff";
+    Layout = "~/Areas/Staff/Views/Shared/_StaffLayout.cshtml";
+}
+
+@{
+    var currentUser = (CinemaWeb.Models.user)HttpContext.Current.Session["staff"];
+}
+
+@*@section UserName {
+    <div class="user_name  row1 " style="font-weight: 600; font-size: small;">
+        @currentUser.full_name
+    </div>
+}*@

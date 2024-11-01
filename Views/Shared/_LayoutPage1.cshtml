@@ -1,0 +1,398 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="~/assets/images/logo/cinema-logo.png" type="image/png">
+    <title>Ohayou Cinema</title>
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/font/themify-icons/themify-icons.css">
+    <link rel="stylesheet" href="~/assets/css/layout.css?v=1">
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="header">
+        <div class="container-fluid  p-4">
+            <div class="row align-items-center">
+                <div class="col-md-2 px-5 py-1">
+                    <a href="/Home/Index">
+                        <img src="~/assets/images/logo/cinema-logo.png" alt="Ohayou Cinema" class="img-fluid">
+                    </a>
+                </div>
+                <div class="col-md-2 buyticket-area">
+                    <button type="button" onclick="redirectToSignIn('/User/BookTicket/BookTicket')" class="buyticket-btn btn">
+                        <img src="~/assets/images/subimg/btn-ticket.png" alt="" class="img-buy-btn img-fluid">
+                    </button>
+                </div>
+                <div class="col-md-5">
+                    <ul class="list-gr-1 list-group list-group-horizontal">
+                        <li class="list-group-item movie-area">
+                            Phim
+                            <i class="ti-angle-down down-btn"></i>
+                            <ul class="movie-status list-group">
+                                <li class="movie-sta-text-1 py-1">
+                                    <i class="fa-solid fa-film"></i>
+                                    <a href="#playing">PHIM ĐANG CHIẾU</a>
+                                </li>
+                                <div class="movie-list py-1">
+                                    <div class="row">
+                                        @RenderSection("Phimdangchieu", required: false)
+                                    </div>
+                                </div>
+                                <li class="movie-sta-text-2 py-1">
+                                    <i class="fa-solid fa-film"></i>
+                                    <a href="#coming">PHIM SẮP CHIẾU</a>
+                                </li>
+                                <div class="movie-list py-1">
+                                    <div class="row">
+                                        @RenderSection("Phimsapchieu", required: false)
+                                    </div>
+                                </div>
+                            </ul>
+                        </li>
+
+                        <li class="list-group-item cinema-corner text-center">
+                            Góc Điện Ảnh
+                            <i class="ti-angle-down down-btn"></i>
+                            <ul class="sub-list-gr-1 list-group">
+                                <li><a href="/User/BookTicket/MovieType">Thể loại phim</a></li>
+                                <li><a href="/User/BookTicket/ActorList">Diễn viên</a></li>
+                                <li><a href="/User/BookTicket/DirectorList">Đạo diễn</a></li>
+                                @*<li><a href="#">Bình luận phim</a></li>*@
+                            </ul>
+                        </li>
+
+                        <li class="list-group-item event-list text-center">
+                            Sự Kiện
+                            <i class="ti-angle-down down-btn"></i>
+                            <ul class="sub-list-gr-1 list-group">
+                                @*<li><a href="#">Ưu đãi</a></li>*@
+                                <li><a href="/User/BookTicket/BestMovie">Phim hay tháng</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="list-group-item ticket-price text-center">
+                            Rạp/Giá vé
+                            <i class="ti-angle-down down-btn"></i>
+                            <ul class="sub-list-gr-1 list-group">
+                                <li><a href="/User/UserHome/OhayouCinema">Rạp Đà Nẵng</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-1">
+                    <button class="search-btn btn">
+                        <i class="search-icon ti-search"></i>
+                    </button>
+                </div>
+                <div class="login-area col-md-2">
+                    <div class="hidden-login js-hidden-login">
+                        <button class="login-btn btn js-login-btn">
+                            Đăng nhập
+                        </button>
+                        <img class="g-star-img" src="~/assets/images/logo/gstar.svg" alt="G-star">
+                    </div>
+                    <div class="modal signin-modal" id="js-modal">
+                        <div class="login-container" id="js-login-container">
+                            <div class="form-container sign-up">
+                                <form class="signup-form">
+                                    @Html.AntiForgeryToken()
+                                    <h1>Tạo Tài Khoản</h1>
+                                    <input name="name" type="text" required placeholder="Name">
+                                    <input name="email" type="email" required placeholder="Email">
+                                    <input name="dateofbirth" type="date" required placeholder="Date Of Birth">
+                                    <input name="pass" type="password" required placeholder="Password">
+                                    <input name="confirmpass" type="password" required placeholder="Confirm Password">
+                                    <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                                    <span class="text-danger error-message">
+                                    </span>
+                                    <button type="submit" class="js-signup">Đăng Ký</button>
+                                </form>
+                            </div>
+
+                            <div class="form-container sign-in">
+                                <form class="signin-form">
+                                    @Html.AntiForgeryToken()
+                                    <h1>Đăng Nhập</h1>
+                                    <input name="email" type="email" required placeholder="Email">
+                                    <input name="pass" type="password" required placeholder="Password">
+                                    <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                                    <span class="text-danger error-message">
+                                    </span>
+                                    <a style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#forgetPass">Quên mật khẩu?</a>
+                                    <button type="submit" class="js-signin">Đăng Nhập</button>
+                                </form>
+                            </div>
+                            <div class="toggle-container">
+                                <div class="toggle">
+                                    <div class="toggle-panel toggle-left">
+                                        <h1>Đã có tài khoản?</h1>
+                                        <p>Đăng nhập với tài khoản đã có</p>
+                                        <button class="hidden" id="js-login">Đăng Nhập</button>
+                                    </div>
+                                    <div class="toggle-panel toggle-right">
+                                        <h1>Chưa có tài khoản?</h1>
+                                        <p>Đăng ký tài khoản với thông tin cá nhân của bạn</p>
+                                        <button class="hidden" id="js-register">Đăng Ký</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal -->
+                            <div @*style="display: flex; align-items: center"*@ class="modal fade" id="forgetPass" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" style="display: flex; justify-content: center">
+                                    <div class="modal-content" style="width: 400px; height: 450px">
+                                        <img src="~/assets/images/subimg/ohayoucinema.svg" class="rounded mx-auto d-block" alt="" style="margin-top: 2rem">
+                                        <p style="font-weight: 500; display: flex; margin-top: 1rem; justify-content: center;">Quên Mật Khẩu?</p>
+
+                                        <form class="forgetPass-form">
+                                            <span style="font-size: 13px">
+                                                Vui lòng cung cấp email đăng nhập, chúng tôi sẽ gửi mã cho bạn.
+                                            </span>
+                                            <label style="color: rgb(119 119 119 /1); font-weight: 600; font-size: 12px">Email</label>
+                                            <input name="registerEmail" type="email" required placeholder="Nhập email đã đăng ký" />
+                                            <span class="text-danger response-mess"></span>
+                                            <button type="submit">Cấp lại mật khẩu</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div @*style="display: flex; align-items: center"*@ class="modal fade" id="verifyCode" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" style="display: flex; justify-content: center">
+                                    <div class="modal-content" style="width: 400px; height: 450px">
+                                        <img src="~/assets/images/subimg/ohayoucinema.svg" class="rounded mx-auto d-block" alt="" style="margin-top: 2rem">
+                                        <p style="font-weight: 500; display: flex; margin-top: 1rem; justify-content: center;">Xác Thực Email</p>
+
+                                        <form class="verifyCode-form">
+                                            <span style="font-size: 13px; margin: 1rem 0;">
+                                                Vui lòng nhập mã xác thực chúng tôi đã gửi vào email của bạn đã đăng ký.
+                                            </span>
+                                            <label style="color: rgb(119 119 119 /1); font-weight: 600; font-size: 12px">Verify Code</label>
+                                            <input name="verifyCode" type="text" required placeholder="Nhập mã xác thực" />
+                                            <span class="text-danger response-mess"></span>
+                                            <button type="submit">Xác nhận</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slider">
+        <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators slider-btn">
+                <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="~/assets/images/slider/exhuma.jpg" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img src="~/assets/images/slider/demonslayer.jpg" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img src="~/assets/images/slider/kong.jpg" class="d-block w-100" alt="...">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+    @RenderBody()
+    <div class="content">
+        <div role="tabpanel">
+            <ul class="stt-movie-list list-group list-group-horizontal>
+                <li class="px-4 list-group-item">
+                    <i class="fa-solid fa-film movie-icon"></i>
+                    <span class="fw-bolder">PHIM</span>
+                </li>
+                <li class="stt-movie-item list-group-item fw-normal now-playing">
+                    <a href="#playing" class="active" data-bs-toggle="list" data-bs-target="#playing" role="tab">Đang chiếu</a>
+                </li>
+                <li class="stt-movie-item list-group-item fw-normal up-coming">
+                    <a href="#coming" data-bs-toggle="list" data-bs-target="#coming" role="tab">Sắp chiếu</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="movie-list tab-pane active" id="playing" role="tabpanel">
+                    <div class="row" style="margin: 0 1rem">
+                        @RenderSection("AllPhimdangchieu", required: false)
+                    </div>
+                </div>
+                <div class="movie-list tab-pane" id="coming" role="tabpanel">
+                    <div class="row" style="margin: 0 1rem">
+                        @RenderSection("AllPhimsapchieu", required: false)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+    </div>
+    <script src="~/assets/js/scripts.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+        function redirectToSignIn(returnUrl) {
+            $('.signin-modal').addClass('open')
+            sessionStorage.setItem('returnUrl', returnUrl);
+        }
+
+        $('.signin-form').submit(function (e) {
+            e.preventDefault();
+            var email = $('.signin-form input[name="email"]').val();
+            var pass = $('.signin-form input[name="pass"]').val();
+            var returnUrl = $('.signin-form input[name="returnUrl"]').val();
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            $.ajax({
+                url: '/Home/SignIn',
+                type: 'POST',
+                data: {
+                    email: email,
+                    pass: pass,
+                    returnUrl: returnUrl,
+                    __RequestVerificationToken: token 
+                },
+                success: function (data) {
+                    if (data.success === false) {
+                        $('.error-message').text(data.message)
+                    }
+                    else {
+                        sessionStorage.setItem('signinSuccess', true);
+                        var returnUrl = sessionStorage.getItem('returnUrl');
+                        sessionStorage.removeItem('returnUrl');
+                        if (returnUrl) {
+                            window.location.href = returnUrl;
+                        }
+                        else 
+                            window.location.href = data.url;
+                    }
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        })
+
+        $('.signup-form').submit(function (e) {
+            e.preventDefault();
+            var email = $('input[name="email"]').val();
+            var name = $('input[name="name"]').val();
+            var pass = $('input[name="pass"]').val();
+            var confirmpass = $('input[name="confirmpass"]').val();
+            var returnUrl = $('input[name="returnUrl"]').val();
+            $.ajax({
+                url: '/Home/CheckExistAccount',
+                type: 'POST',
+                data: {
+                    email: email,
+                    name: name,
+                    pass: pass,
+                    confirmpass: confirmpass,
+                    returnUrl: returnUrl
+                },
+                success: function (data) {
+                    if (data.success) {
+                        SendVerifyCode(email, name)
+                    }
+                    else {
+                        $('.error-message').text(data.message)
+                    }
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        })
+
+        function SendVerifyCode(email, name) {
+            $.ajax({
+                url: '/Home/VerifyEmail',
+                type: 'POST',
+                data: { email: email, name: name },
+                success: function (data) {
+                    if (data.success) {
+                        $('#verifyCode').modal('show');
+                    } else {
+                        $('.error-message').text(data.message);
+                    }
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        }
+
+        $('.verifyCode-form').submit(function (e) {
+            e.preventDefault();
+            var verifyCode = $('input[name="verifyCode"]').val();
+            var name = $('.signup-form input[name="name"]').val();
+            var email = $('.signup-form input[name="email"]').val();
+            var pass = $('.signup-form input[name="pass"]').val();
+            var dateofbirth = $('.signup-form input[name="dateofbirth"]').val();
+            var returnUrl = $('.signup-form input[name="returnUrl"]').val();
+            $.ajax({
+                url: '/Home/SignUp',
+                type: 'POST',
+                data: {
+                    name: name,
+                    email: email,
+                    dateofbirth: dateofbirth,
+                    pass: pass,
+                    returnUrl: returnUrl,
+                    verifyCode: verifyCode
+                },
+                success: function (data) {
+                    if (data.success === false)
+                        $('.response-mess').text(data.message)
+                    else {
+                        sessionStorage.setItem('signupSuccess', true);
+                        var returnUrl = sessionStorage.getItem('returnUrl');
+                        sessionStorage.removeItem('returnUrl');
+                        if (returnUrl) {
+                            window.location.href = returnUrl;
+                        }
+                        else
+                            window.location.href = data.url;
+                    }
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        })
+
+        $('.forgetPass-form').submit(function (e) {
+            e.preventDefault();
+            var registerEmail = $('input[name="registerEmail"]').val();
+            $.ajax({
+                url: '/Home/ForgetPassword',
+                type: 'POST',
+                data: { registerEmail: registerEmail },
+                success: function (data) {
+                    $('.response-mess').text(data.message)
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        })
+        $('input').click(() => {
+            $('.response-mess').text("")
+        })
+
+    </script>
+</body>
+</html>
